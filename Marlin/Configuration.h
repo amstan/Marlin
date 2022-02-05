@@ -69,7 +69,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(amstan, Taz 5 RAMBo 1.3 config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(amstan, Taz 5 Archim 2.2b config)" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -96,7 +96,7 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RAMBO
+  #define MOTHERBOARD BOARD_ARCHIM2
 #endif
 
 /**
@@ -107,7 +107,7 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 0
+#define SERIAL_PORT -1
 
 /**
  * Serial Port Baud Rate
@@ -583,7 +583,7 @@
 
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
-// WARNING(TAZ5): 255 here means that 15A will go to the bed, which it can take, but neither rambo (15A fuse for everything including extruder heating and motors) and the bed connector pins (max 13A, TE 1-66361-2 and 1-66360-6) can really take.
+// WARNING(TAZ5): 255 here means that 15A will go to the bed, which it can take, but neither Archim2 (15A fuse for everything including extruder heating and motors) and the bed connector pins (max 13A, TE 1-66361-2 and 1-66360-6) can really take.
 // If you over-currented it, https://itworks3d.com/product/taz-4-5-direct-heated-bed-wiring-harness/ can probably be a good replacement to bypass the now burnt connector
 #define BANG_MAX 220     // Limits current to nozzle while in bang-bang mode; 255=full current
 #define PID_MAX 225      // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
@@ -794,18 +794,19 @@
 //#define USE_KMAX_PLUG
 
 // Enable pullup for all endstops to prevent a floating state
-#define ENDSTOPPULLUPS
+// #define ENDSTOPPULLUPS
+// Archim2 has R22, R63, R75,  R35, R73, R78 externally at 100k
 #if DISABLED(ENDSTOPPULLUPS)
   // Disable ENDSTOPPULLUPS to set pullups individually
-  #define ENDSTOPPULLUP_XMIN
-  #define ENDSTOPPULLUP_YMIN
-  #define ENDSTOPPULLUP_ZMIN
+  //#define ENDSTOPPULLUP_XMIN
+  //#define ENDSTOPPULLUP_YMIN
+  //#define ENDSTOPPULLUP_ZMIN
   //#define ENDSTOPPULLUP_IMIN
   //#define ENDSTOPPULLUP_JMIN
   //#define ENDSTOPPULLUP_KMIN
-  #define ENDSTOPPULLUP_XMAX
-  #define ENDSTOPPULLUP_YMAX
-  #define ENDSTOPPULLUP_ZMAX
+  //#define ENDSTOPPULLUP_XMAX
+  //#define ENDSTOPPULLUP_YMAX
+  //#define ENDSTOPPULLUP_ZMAX
   //#define ENDSTOPPULLUP_IMAX
   //#define ENDSTOPPULLUP_JMAX
   //#define ENDSTOPPULLUP_KMAX
@@ -864,10 +865,9 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-// Rambo v1.3 on the Lulzbot TAZ actually has A4982, which is an improved version (bigger package) of A4988, but for all intents and purposes of firmware it's the same
-#define X_DRIVER_TYPE  A4988
-#define Y_DRIVER_TYPE  A4988
-#define Z_DRIVER_TYPE  A4988
+#define X_DRIVER_TYPE  TMC2130
+#define Y_DRIVER_TYPE  TMC2130
+#define Z_DRIVER_TYPE  TMC2130
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
 //#define Z2_DRIVER_TYPE A4988
@@ -876,8 +876,8 @@
 //#define I_DRIVER_TYPE  A4988
 //#define J_DRIVER_TYPE  A4988
 //#define K_DRIVER_TYPE  A4988
-#define E0_DRIVER_TYPE A4988
-//#define E1_DRIVER_TYPE A4988
+#define E0_DRIVER_TYPE TMC2130
+//#define E1_DRIVER_TYPE TMC2130
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
 //#define E4_DRIVER_TYPE A4988
@@ -887,7 +887,7 @@
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
-//#define ENDSTOP_INTERRUPTS_FEATURE
+#define ENDSTOP_INTERRUPTS_FEATURE
 
 /**
  * Endstop Noise Threshold
@@ -904,7 +904,7 @@
 //#define ENDSTOP_NOISE_THRESHOLD 2
 
 // Check for stuck or disconnected endstops during homing moves.
-#define DETECT_BROKEN_ENDSTOP
+// #define DETECT_BROKEN_ENDSTOP
 // TAZ5 has these as normally open, so let's enable extra safety
 
 //=============================================================================
@@ -932,7 +932,8 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100.5, 100.5, 1600, 833 }  // default steps per unit for TAZ {X,Y,Z,E}
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100.5, 100.5, 1600, 833 }  // default steps per unit for TAZ {X,Y,Z,E}, 16 microsteps
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 201,   201,   3200, 1666 }  // 32 microsteps
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -996,7 +997,7 @@
   #endif
 #endif
 
-#define DEFAULT_EJERK   10.0  // May be used by Linear Advance
+#define DEFAULT_EJERK   8.0  // May be used by Linear Advance
 
 /**
  * Junction Deviation Factor
